@@ -1,10 +1,12 @@
 FROM apache/superset:latest
 
-# Set environment variables
-ENV SUPERSET_HOME=/app/superset_home \
-    SUPERSET_SECRET_KEY=supersecretkey \
-    FLASK_APP=superset \
-    SUPERSET_CONFIG_PATH=/app/pythonpath/superset_config.py
+# Environment variables
+ENV SUPERSET_SECRET_KEY=supersecretkey
+ENV FLASK_APP=superset
+ENV SUPERSET_CONFIG_PATH=/app/pythonpath/superset_config.py
 
-# Copy optional config
-COPY superset_config.py /app/pythonpath/superset_config.py
+# Expose port
+EXPOSE 8088
+
+# Run superset via gunicorn with the correct app entrypoint
+CMD ["gunicorn", "-b", "0.0.0.0:8088", "--workers=4", "--worker-class=gthread", "--threads=8", "--timeout=120", "superset.app:create_app()"]
