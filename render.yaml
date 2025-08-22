@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: superset
+    env: docker
+    plan: free
+    envVars:
+      - key: SUPERSET_SECRET_KEY
+        value: supersecretkey
+    dockerCommand: >
+      gunicorn --bind 0.0.0.0:8088
+               --workers 4
+               --worker-class gthread
+               --threads 8
+               --timeout 120
+               "superset.app:create_app()"
