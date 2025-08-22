@@ -1,15 +1,11 @@
 services:
   - type: web
     name: superset
-    env: docker
-    plan: free
+    env: python
+    buildCommand: ./render-build.sh
+    startCommand: gunicorn -w 4 -k gthread --timeout 60 --bind 0.0.0.0:8080 "superset.app:create_app()"
     envVars:
-      - key: SUPERSET_SECRET_KEY
-        value: supersecretkey
-    dockerCommand: >
-      gunicorn --bind 0.0.0.0:8088
-               --workers 4
-               --worker-class gthread
-               --threads 8
-               --timeout 120
-               "superset.app:create_app()"
+      - key: SUPERSET_ENV
+        value: production
+      - key: FLASK_APP
+        value: superset
