@@ -2,16 +2,20 @@ services:
   - type: web
     name: superset
     env: python
-    buildCommand: ./render-build.sh
-    startCommand: >
-      bash -c "
-        superset db upgrade &&
-        superset fab create-admin
-          --username admin
-          --firstname Superset
-          --lastname Admin
-          --email admin@admin.com
-          --password admin || true &&
-        superset init &&
-        gunicorn -w 4 -k gthread --timeout 60 --bind 0.0.0.0:8080 'superset.app:create_app()'
-      "
+    plan: free
+    buildCommand: |
+      chmod +x render-build.sh
+      ./render-build.sh
+    startCommand: |
+      gunicorn -w 4 -k gthread --timeout 300 --bind 0.0.0.0:10000 "superset.app:create_app()"
+    envVars:
+      - key: SUPERSET_SECRET_KEY
+        value: "your_random_secret_key_here"
+      - key: SUPERSET_DATABASE_URI
+        fromDatabase:
+          name: superset-db
+          property: connectionString
+
+databases:
+  - name: superset-db
+    plan: free
