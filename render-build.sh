@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-set -o errexit
+set -e
 
-# Apply DB migrations
+# Apply migrations on Postgres
 superset db upgrade
 
-# Create an admin user if it doesn’t exist
+# Create admin (idempotent, won’t fail if exists)
 superset fab create-admin \
    --username admin \
    --firstname Superset \
    --lastname Admin \
-   --email admin@admin.com \
+   --email admin@superset.com \
    --password admin || true
 
-# Setup default roles and permissions
+# Initialize roles/permissions
 superset init
