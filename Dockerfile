@@ -3,6 +3,9 @@ FROM apache/superset:latest
 ENV SUPERSET_SECRET_KEY=supersecretkey
 ENV FLASK_APP=superset
 
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
+
 EXPOSE 8088
 
 CMD superset db upgrade && \
