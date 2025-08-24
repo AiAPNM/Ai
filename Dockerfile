@@ -1,8 +1,6 @@
-FROM python:3.10-slim
+FROM apache/superset:latest
 
-WORKDIR /app
-
-# Install build tools + postgres client headers
+USER root
 RUN apt-get update && apt-get install -y \
     build-essential \
     gcc \
@@ -12,12 +10,10 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 8088
-
-FROM apache/superset:latest
-
 ENV SUPERSET_SECRET_KEY=supersecretkey
 ENV FLASK_APP=superset
+
+EXPOSE 8088
 
 CMD superset db upgrade && \
     superset fab create-admin \
