@@ -9,11 +9,8 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install psycopg2 in Superset's virtualenv
-RUN /app/.venv/bin/pip install --no-cache-dir psycopg2-binary
-
-# Optional: pin version to avoid future breakage
-# RUN /app/.venv/bin/pip install psycopg2-binary==2.9.9
+# Install postgres driver directly into Superset environment
+RUN pip install --no-cache-dir psycopg2-binary
 
 ENV SUPERSET_SECRET_KEY=supersecretkey
 ENV FLASK_APP=superset
