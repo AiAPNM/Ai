@@ -2,15 +2,18 @@ FROM apache/superset:latest
 
 USER root
 
-# Install system deps needed for psycopg2
+# Install system dependencies needed by psycopg2
 RUN apt-get update && apt-get install -y \
     build-essential \
     gcc \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install postgres driver inside superset's virtualenv
-RUN . /app/.venv/bin/activate && pip install --no-cache-dir psycopg2-binary
+# Install psycopg2 in Superset's virtualenv
+RUN /app/.venv/bin/pip install --no-cache-dir psycopg2-binary
+
+# Optional: pin version to avoid future breakage
+# RUN /app/.venv/bin/pip install psycopg2-binary==2.9.9
 
 ENV SUPERSET_SECRET_KEY=supersecretkey
 ENV FLASK_APP=superset
