@@ -2,18 +2,21 @@ FROM apache/superset:latest
 
 USER root
 
-# Install build deps for psycopg2
+# Install build deps
 RUN apt-get update && apt-get install -y \
     build-essential \
     gcc \
     libpq-dev \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-# ✅ Install psycopg2 in Superset's Python environment
-RUN python -m pip install --no-cache-dir psycopg2-binary==2.9.9
+# Install psycopg2 driver
+RUN pip3 install --no-cache-dir psycopg2-binary==2.9.9
 
-# ✅ Optional: confirm installation (should show "✅ psycopg2 installed" in logs)
-RUN python -c "import psycopg2; print('✅ psycopg2 installed')"
+# Verify
+RUN python3 -c "import psycopg2; print('✅ psycopg2 installed')"
+
+USER superset
 
 ENV SUPERSET_SECRET_KEY=supersecretkey
 ENV FLASK_APP=superset
