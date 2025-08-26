@@ -9,11 +9,11 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install psycopg2 into Superset's venv
-RUN /app/.venv/bin/pip install --no-cache-dir psycopg2-binary
+# Install psycopg2 into whatever python Superset is using
+RUN python -m pip install --no-cache-dir psycopg2-binary==2.9.9
 
-# Verify inside the same venv
-RUN /app/.venv/bin/python -c "import psycopg2; print('✅ psycopg2 installed')"
+# Verify installation
+RUN python -c "import psycopg2; print('✅ psycopg2 installed')"
 
 ENV SUPERSET_SECRET_KEY=supersecretkey
 ENV FLASK_APP=superset
