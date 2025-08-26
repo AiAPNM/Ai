@@ -2,18 +2,8 @@ FROM apache/superset:latest
 
 USER root
 
-# Install build dependencies for psycopg2
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    gcc \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install psycopg2 inside Superset's venv
-RUN /app/.venv/bin/pip install --no-cache-dir psycopg2-binary==2.9.9
-
-# Verify inside the venv
-RUN /app/.venv/bin/python -c "import psycopg2; print('✅ psycopg2 installed in venv')"
+# Install Postgres driver via Superset extras
+RUN pip install "apache-superset[postgres]"
 
 USER superset
 
