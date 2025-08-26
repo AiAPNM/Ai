@@ -9,13 +9,11 @@ RUN apt-get update && apt-get install -y \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Activate Superset venv and install postgres extras
-RUN . /app/.venv/bin/activate \
-    && pip install --no-cache-dir "psycopg2-binary==2.9.9" \
-    && pip install --no-cache-dir "apache-superset[postgres]"
+# Install Postgres driver directly in Superset's venv
+RUN /app/.venv/bin/pip install --no-cache-dir psycopg2-binary==2.9.9 \
+    && /app/.venv/bin/pip install --no-cache-dir "apache-superset[postgres]"
 
 # Verify psycopg2 inside venv
-RUN . /app/.venv/bin/activate \
-    && python -c "import psycopg2; print('✅ psycopg2 available in venv')"
+RUN /app/.venv/bin/python -c "import psycopg2; print('✅ psycopg2 installed and ready')"
 
 USER superset
